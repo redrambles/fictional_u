@@ -37,6 +37,8 @@ get_header(); ?>
   <?php }
   echo paginate_links();
 ?>
+
+<p>Looking for a recap of past events? <a href="<?php echo site_url('/past-events') ?>">Check out our past events archive.</a></p>
 </div>
 
 <?php get_footer();
