@@ -10,7 +10,12 @@ function university_post_types(){
         'all_items' => 'All Events',
         'singular_name' => 'Event'
       ),
-      'menu_icon' => 'dashicons-calendar'
+      'menu_icon' => 'dashicons-calendar',
+      'has_archive' => true,
+      'rewrite' => array(
+        'slug' => 'events'
+      ),
+      'supports' => array('title', 'editor', 'excerpt')
     )
   );
 }
