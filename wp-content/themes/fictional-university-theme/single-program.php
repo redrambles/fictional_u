@@ -22,6 +22,41 @@
       <div class="generic-content"><?php the_content(); ?></div>
 
       <?php
+        // Related Professors
+        $args = array(
+          'posts_per_page' => -1,
+          'post_type' => 'professor',
+          'orderby' => 'title',
+          'order' => 'ASC',
+          'meta_query' => array(
+            array(
+              'key' => 'related_program',
+              'compare' => 'LIKE',
+              'value' => '"' . get_the_ID() . '"' // to handle the serialization of the data
+            )
+          )
+        );
+        $relatedProfessors = new WP_Query($args);
+
+        if ( $relatedProfessors->have_posts() ) :
+          echo '<hr class="section-break">';
+          echo '<h2 class="headline headline--medium">' . get_the_title() . ' Professors</h2>';
+          echo '<ul class="professor-cards">';
+          while($relatedProfessors->have_posts() ) : $relatedProfessors->the_post(); ?>
+            <li class="professor-card__list-item">
+              <a class="professor-card" href="<?php the_permalink(); ?>">
+                <img class="professor-card__image" src="<?php the_post_thumbnail_url('professorLandscape'); ?>">
+                <span class="professor-card__name"><?php the_title(); ?></span>
+              </a>
+          </li>
+          <?php endwhile;
+            endif;
+          wp_reset_postdata();  
+          echo '</ul>';
+          ?>
+
+        <?php
+          // Related Events
           $args = array(
             'posts_per_page' => -1,
             'post_type' => 'event',
@@ -37,12 +72,13 @@
             )
           );
           $homepageEvents = new WP_Query($args);
+          $counter = 0;
 
           if ( $homepageEvents->have_posts() ) :
             echo '<hr class="section-break">';
             echo '<h2 class="headline headline--medium">Upcoming ' . get_the_title() . ' Events</h2>';
 
-            while($homepageEvents->have_posts() ) : $homepageEvents->the_post(); 
+            while($homepageEvents->have_posts() && ($counter < 2) ) : $homepageEvents->the_post(); 
               $eventDate = new DateTime( get_field('event_date') );
               $today = new DateTime();
               if( $eventDate >= $today ) : ?>
@@ -63,9 +99,11 @@
                     <a href="<?php the_permalink(); ?>" class="nu gray">Learn more</a></p>
                   </div>
                 </div>
-            <?php endif; endwhile;
-              wp_reset_postdata();  
+            <?php $counter++; 
+                  endif; 
+                endwhile;  
               endif;
+            wp_reset_postdata(); 
            ?>
     </div>
     

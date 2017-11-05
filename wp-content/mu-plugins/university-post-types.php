@@ -3,6 +3,8 @@
 //// CUSTOM POST TYPES
 
 function university_post_types(){
+
+  // Event
   register_post_type( 'event', array(
       'public' => true,
       'labels' => array(
@@ -21,6 +23,7 @@ function university_post_types(){
     )
   );
 
+  // Program
   register_post_type( 'program', array(
     'public' => true,
     'labels' => array(
@@ -37,6 +40,21 @@ function university_post_types(){
     ),
     'supports' => array('title', 'editor')
   ));
+
+  // Professors
+  register_post_type( 'professor', array(
+    'public' => true,
+    'labels' => array(
+      'name' => 'Professor',
+      'add_new_item' => 'Add New Professor',
+      'edit_item' => 'Edit Professor',
+      'all_items' => 'All Professors',
+      'singular_name' => 'Professor'
+    ),
+    'menu_icon' => 'dashicons-welcome-learn-more',
+    'supports' => array('title', 'editor', 'thumbnail')
+  ));
+
 }
 
 add_action('init', 'university_post_types');
