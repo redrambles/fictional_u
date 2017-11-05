@@ -25,12 +25,19 @@
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .22);
   }
 
+  &__date.passed {
+    background-color:#444;
+  }
   &__date:hover {
     opacity: .75;
   }
 
   &__date--beige {
     background-color: $mainYellow;
+  }
+
+  &__date--passed {
+    background-color: #485d71;
   }
 
   &__month {
@@ -46,3 +53,4 @@
     font-weight: 700;
   }
 }
+

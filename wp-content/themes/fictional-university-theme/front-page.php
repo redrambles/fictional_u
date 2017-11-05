@@ -24,7 +24,7 @@
           );
           $homepageEvents = new WP_Query($args);
           $counter = 0;
-          while($homepageEvents->have_posts() && $counter < 3) : $homepageEvents->the_post(); 
+          while($homepageEvents->have_posts() && $counter < 2) : $homepageEvents->the_post(); 
             $eventDate = new DateTime( get_field('event_date') );
             $today = new DateTime();
             if( $eventDate >= $today ) : ?>

@@ -38,7 +38,7 @@ get_header(); ?>
     $pastEvents = new WP_Query($args);
       while( $pastEvents->have_posts() ) : $pastEvents->the_post(); ?>
           <div class="event-summary">
-            <a class="event-summary__date t-center" href="#">
+            <a class="event-summary__date passed t-center" href="#">
               <span class="event-summary__month"><?php 
               $eventDate = new DateTime( get_field('event_date') );
               echo $eventDate->format('M'); 

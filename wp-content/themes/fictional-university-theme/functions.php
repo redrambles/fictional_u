@@ -15,6 +15,7 @@ function university_features() {
 
 add_action('after_setup_theme', 'university_features');
 
+// Archive: Only show events that haven't passed and order by event date from soonest to farthest away
 function university_events_archive($query) {
   if( !is_admin() && is_post_type_archive('event') && is_main_query() ) {
     $today = date('Ymd');
@@ -32,3 +33,13 @@ function university_events_archive($query) {
   }
 }
 add_action('pre_get_posts', 'university_events_archive');
+
+// Archive: Order program cpt by title (alphabetically) rather than by date
+function university_programs_archive($query) {
+  if( !is_admin() && is_post_type_archive('program') && is_main_query() ) {
+    $query->set('posts_per_page', 50 );
+    $query->set('orderby', 'title');
+    $query->set('order', 'ASC');
+  }
+}
+add_action('pre_get_posts', 'university_programs_archive');

@@ -2189,12 +2189,20 @@ body.admin-bar .search-overlay {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, .22);
 }
 
+.event-summary__date.passed {
+  background-color:#444;
+}
+
 .event-summary__date:hover {
   opacity: .75;
 }
 
 .event-summary__date--beige {
   background-color: #F4D35E;
+}
+
+.event-summary__date--passed {
+  background-color: #485d71;
 }
 
 .event-summary__month {
