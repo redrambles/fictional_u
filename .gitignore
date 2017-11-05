@@ -1,4 +1,9 @@
+# General
+.DS_Store
+*.sql
+
 wp-config.php
 node_modules/
 wp-content/uploads/
 wp-content/plugins/query-monitor/
+
