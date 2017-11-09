@@ -3,6 +3,7 @@
 *.sql
 
 wp-config.php
+.vscode/
 node_modules/
 wp-content/uploads/
 wp-content/plugins/query-monitor/
