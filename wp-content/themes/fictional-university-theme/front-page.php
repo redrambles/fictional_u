@@ -15,23 +15,29 @@
       <div class="full-width-split__inner">
         <h2 class="headline headline--small-plus t-center">Upcoming Events</h2>
         <?php
+          $today = date('Ymd');
           $args = array(
-            'posts_per_page' => -1,
+            'posts_per_page' => 2,
             'post_type' => 'event',
             'meta_key' => 'event_date',
             'orderby' => 'meta_value_num',
-            'order' => 'ASC'
+            'order' => 'ASC',
+            'meta_query' => array(
+              array(
+                'key' => 'event_date',
+                'compare' => '>=',
+                'value' => $today,
+                'type' => 'numeric'
+              )
+            )
           );
           $homepageEvents = new WP_Query($args);
-          $counter = 0;
-          while($homepageEvents->have_posts() && $counter < 2) : $homepageEvents->the_post(); 
-            $eventDate = new DateTime( get_field('event_date') );
-            $today = new DateTime();
-            if( $eventDate >= $today ) : ?>
+          while($homepageEvents->have_posts()) : $homepageEvents->the_post(); ?>
               <div class="event-summary">
                 <a class="event-summary__date t-center" href="#">
                   <span class="event-summary__month">
-                  <?php 
+                  <?php
+                  $eventDate = new DateTime(get_field('event_date'));
                   echo $eventDate->format('M'); 
                   ?></span>
                   <span class="event-summary__day"><?php echo $eventDate->format('j'); ?></span>  
@@ -45,8 +51,7 @@
                   <a href="<?php the_permalink(); ?>" class="nu gray">Learn more</a></p>
                 </div>
               </div>
-              <?php $counter++; ?>
-          <?php endif; endwhile;
+          <?php endwhile;
           wp_reset_postdata();  
         ?>
         
