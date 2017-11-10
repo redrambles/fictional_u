@@ -17,11 +17,12 @@ university_page_banner(array(
       $lat = $mapLocation['lat'];
       $lng = $mapLocation['lng'] ?>
 
-      <div class="marker" data-lat="<?php echo $lat; ?>" data-lng="<?php echo $lng; ?>"></div>
+      <div class="marker" data-lat="<?php echo $lat; ?>" data-lng="<?php echo $lng; ?>">
+        <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+        <?php echo $mapLocation['address']; ?>
+      </div>
 
-    <?php }
-    echo paginate_links();
-  ?>
+    <?php } ?>
   </div>
 </div>
 
