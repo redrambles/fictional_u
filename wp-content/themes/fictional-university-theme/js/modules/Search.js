@@ -9,6 +9,9 @@ class Search {
     this.searchField = $("#search-term");
     this.isOverlayOpen = false;
     this.typingTimer;
+    this.searchResults = $("#search-overlay__results");
+    this.isSpinnerSpinning = false;
+    this.previousSearchValue;
     this.events();
   }
 
@@ -17,17 +20,33 @@ class Search {
     this.openButton.on("click", this.openOverlay.bind(this));
     this.closeButton.on("click", this.closeOverlay.bind(this));
     $(document).on("keydown", this.keyPressDispatcher.bind(this));
-    this.searchField.on("keydown", this.typingLogic.bind(this));
+    this.searchField.on("keyup", this.typingLogic.bind(this));
   }
 
   // 3. Methods
 
   typingLogic(){
+    // This will make it so if you just move your cursor or press some key that has no bearing on the word(s) in the search field, that you won't trigger the spinner and/or search
+    if( this.searchField.val() != this.previousSearchValue ){
     // This will clear the function if another key is pressed before the delay is complete
-    clearTimeout(this.typingTimer);
-    this.typingTimer = setTimeout(function(){
-      console.log("yo this is timeout");
-    }, 750);
+      clearTimeout(this.typingTimer);
+      if ( this.searchField.val() != "" ) {
+        if ( !this.isSpinnerSpinning ){
+          this.searchResults.html('<div class="spinner-loader"></div>');
+          this.isSpinnerSpinning = true;      
+        }
+        this.typingTimer = setTimeout( this.getResults.bind(this), 750);
+      } else {
+        this.searchResults.html('');
+        this.isSpinnerSpinning = false;
+      }
+    }
+    this.previousSearchValue = this.searchField.val();
+  }
+
+  getResults(){
+    this.searchResults.html("search results!");
+    this.isSpinnerSpinning = false;
   }
 
   openOverlay(){
@@ -43,7 +62,7 @@ class Search {
   }
 
   keyPressDispatcher(e){
-    if (e.keyCode == '83' && !this.isOverlayOpen) {
+    if (e.keyCode == '83' && !this.isOverlayOpen && !$("input, textarea").is(':focus')) {
       this.openOverlay();
       console.log('open overlay');
     }

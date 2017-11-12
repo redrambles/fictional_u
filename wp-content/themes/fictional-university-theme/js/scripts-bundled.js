@@ -10566,6 +10566,9 @@ var Search = function () {
     this.searchField = (0, _jquery2.default)("#search-term");
     this.isOverlayOpen = false;
     this.typingTimer;
+    this.searchResults = (0, _jquery2.default)("#search-overlay__results");
+    this.isSpinnerSpinning = false;
+    this.previousSearchValue;
     this.events();
   }
 
@@ -10578,7 +10581,7 @@ var Search = function () {
       this.openButton.on("click", this.openOverlay.bind(this));
       this.closeButton.on("click", this.closeOverlay.bind(this));
       (0, _jquery2.default)(document).on("keydown", this.keyPressDispatcher.bind(this));
-      this.searchField.on("keydown", this.typingLogic.bind(this));
+      this.searchField.on("keyup", this.typingLogic.bind(this));
     }
 
     // 3. Methods
@@ -10586,11 +10589,28 @@ var Search = function () {
   }, {
     key: "typingLogic",
     value: function typingLogic() {
-      // This will clear the function if another key is pressed before the delay is complete
-      clearTimeout(this.typingTimer);
-      this.typingTimer = setTimeout(function () {
-        console.log("yo this is timeout");
-      }, 750);
+      // This will make it so if you just move your cursor or press some key that has no bearing on the word(s) in the search field, that you won't trigger the spinner and/or search
+      if (this.searchField.val() != this.previousSearchValue) {
+        // This will clear the function if another key is pressed before the delay is complete
+        clearTimeout(this.typingTimer);
+        if (this.searchField.val() != "") {
+          if (!this.isSpinnerSpinning) {
+            this.searchResults.html('<div class="spinner-loader"></div>');
+            this.isSpinnerSpinning = true;
+          }
+          this.typingTimer = setTimeout(this.getResults.bind(this), 750);
+        } else {
+          this.searchResults.html('');
+          this.isSpinnerSpinning = false;
+        }
+      }
+      this.previousSearchValue = this.searchField.val();
+    }
+  }, {
+    key: "getResults",
+    value: function getResults() {
+      this.searchResults.html("search results!");
+      this.isSpinnerSpinning = false;
     }
   }, {
     key: "openOverlay",
@@ -10609,7 +10629,7 @@ var Search = function () {
   }, {
     key: "keyPressDispatcher",
     value: function keyPressDispatcher(e) {
-      if (e.keyCode == '83' && !this.isOverlayOpen) {
+      if (e.keyCode == '83' && !this.isOverlayOpen && !(0, _jquery2.default)("input, textarea").is(':focus')) {
         this.openOverlay();
         console.log('open overlay');
       }
