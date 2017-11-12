@@ -10563,8 +10563,9 @@ var Search = function () {
     this.openButton = (0, _jquery2.default)(".js-search-trigger");
     this.closeButton = (0, _jquery2.default)(".search-overlay__close");
     this.searchOverlay = (0, _jquery2.default)(".search-overlay");
+    this.searchField = (0, _jquery2.default)("#search-term");
     this.isOverlayOpen = false;
-
+    this.typingTimer;
     this.events();
   }
 
@@ -10577,10 +10578,20 @@ var Search = function () {
       this.openButton.on("click", this.openOverlay.bind(this));
       this.closeButton.on("click", this.closeOverlay.bind(this));
       (0, _jquery2.default)(document).on("keydown", this.keyPressDispatcher.bind(this));
+      this.searchField.on("keydown", this.typingLogic.bind(this));
     }
 
     // 3. Methods
 
+  }, {
+    key: "typingLogic",
+    value: function typingLogic() {
+      // This will clear the function if another key is pressed before the delay is complete
+      clearTimeout(this.typingTimer);
+      this.typingTimer = setTimeout(function () {
+        console.log("yo this is timeout");
+      }, 750);
+    }
   }, {
     key: "openOverlay",
     value: function openOverlay() {
