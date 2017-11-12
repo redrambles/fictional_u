@@ -10613,12 +10613,15 @@ var Search = function () {
     value: function getResults() {
       var _this = this;
 
-      _jquery2.default.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val(), function (data) {
-        // We can use ternary operators to check conditions in template literals - but not if statements
-        _this.searchResults.html("\n          <h2 class=\"search-overlay__section-title\">General information</h2>\n          " + (data.length ? '<ul class="link-list min-list">' : '<p>No results matches that search.</p>') + "\n            " + data.map(function (item) {
+      _jquery2.default.when(_jquery2.default.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val()), _jquery2.default.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.val())).then(function (posts, pages) {
+        var combinedResults = posts[0].concat(pages[0]);
+        _this.searchResults.html("\n          <h2 class=\"search-overlay__section-title\">General information</h2>\n          " + (combinedResults.length ? '<ul class="link-list min-list">' : '<p>No results matches that search.</p>') + "\n            " + combinedResults.map(function (item) {
           return "<li><a href=\"" + item.link + "\">" + item.title.rendered + "</a></li>";
-        }).join('') + "\n          " + (data.length ? '</ul>' : '') + "\n        ");
+        }).join('') + "\n          " + (combinedResults.length ? '</ul>' : '') + "\n        ");
         _this.isSpinnerSpinning = false;
+      }, function (e) {
+        _this.searchResults.html('Hey! An unexpected error ocurred. Please try again.');
+        console.log("Error status: " + e.status);
       });
     }
   }, {
@@ -10646,11 +10649,9 @@ var Search = function () {
     value: function keyPressDispatcher(e) {
       if (e.keyCode == '83' && !this.isOverlayOpen && !(0, _jquery2.default)("input, textarea").is(':focus')) {
         this.openOverlay();
-        console.log('open overlay');
       }
       if (e.keyCode == '27' && this.isOverlayOpen) {
         this.closeOverlay();
-        console.log('close overlay');
       }
     }
 
