@@ -62,6 +62,8 @@ function university_post_types(){
 
   // Professors
   register_post_type( 'professor', array(
+    // building a custom REST route instead
+    //'show_in_rest' => true,
     'public' => true,
     'labels' => array(
       'name' => 'Professor',
