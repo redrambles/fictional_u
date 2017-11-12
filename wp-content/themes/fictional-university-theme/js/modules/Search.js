@@ -56,7 +56,8 @@ class Search {
         this.searchResults.html(`
           <h2 class="search-overlay__section-title">General information</h2>
           ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No results matches that search.</p>'}
-            ${combinedResults.map(item => `<li><a href="${item.link}">${item.title.rendered}</a></li>`).join('')}
+            ${combinedResults.map(item => `<li><a href="${item.link}">${item.title.rendered}</a>
+            ${item.type == 'post' ? ` by ${item.authorName} ` : ''} </li>`).join('')}
           ${combinedResults.length ? '</ul>' : ''}
         `);
         this.isSpinnerSpinning = false;

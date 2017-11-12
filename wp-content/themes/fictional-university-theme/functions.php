@@ -1,5 +1,15 @@
 <?php
 
+function university_custom_rest(){
+  register_rest_field('post', 'authorName', array(
+    'get_callback' => function(){
+      return get_the_author();
+    }
+  ));
+  // you can add more here if you like - for a custom field, for example:
+  // register_rest_field('professor', 'subject', array ( 'get_callback => function(){ return some crap }'))
+}
+add_action('rest_api_init', 'university_custom_rest');
 // Arguments are made optional so that defaults can be used by simply calling the function without passing any args
 function university_page_banner( $args = NULL ){
   $default_title = get_the_title();
