@@ -10560,6 +10560,8 @@ var Search = function () {
   function Search() {
     _classCallCheck(this, Search);
 
+    // must put this at the top because the following properties are looking for things that exist within the structure, which needs to exist first - hence calling the addSearchHTML structure function first
+    this.addSearchHTML();
     this.openButton = (0, _jquery2.default)(".js-search-trigger");
     this.closeButton = (0, _jquery2.default)(".search-overlay__close");
     this.searchOverlay = (0, _jquery2.default)(".search-overlay");
@@ -10598,7 +10600,7 @@ var Search = function () {
             this.searchResults.html('<div class="spinner-loader"></div>');
             this.isSpinnerSpinning = true;
           }
-          this.typingTimer = setTimeout(this.getResults.bind(this), 750);
+          this.typingTimer = setTimeout(this.getResults.bind(this), 600);
         } else {
           this.searchResults.html('');
           this.isSpinnerSpinning = false;
@@ -10609,14 +10611,27 @@ var Search = function () {
   }, {
     key: "getResults",
     value: function getResults() {
-      this.searchResults.html("search results!");
-      this.isSpinnerSpinning = false;
+      var _this = this;
+
+      _jquery2.default.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val(), function (data) {
+        // We can use ternary operators to check conditions in template literals - but not if statements
+        _this.searchResults.html("\n          <h2 class=\"search-overlay__section-title\">General information</h2>\n          " + (data.length ? '<ul class="link-list min-list">' : '<p>No results matches that search.</p>') + "\n            " + data.map(function (item) {
+          return "<li><a href=\"" + item.link + "\">" + item.title.rendered + "</a></li>";
+        }).join('') + "\n          " + (data.length ? '</ul>' : '') + "\n        ");
+        _this.isSpinnerSpinning = false;
+      });
     }
   }, {
     key: "openOverlay",
     value: function openOverlay() {
+      var _this2 = this;
+
       (0, _jquery2.default)("body").addClass("body-no-scroll");
       this.searchOverlay.addClass("search-overlay--active");
+      this.searchField.val('');
+      setTimeout(function () {
+        return _this2.searchField.focus();
+      }, 301); // to give the overlay time to fully fade in
       this.isOverlayOpen = true;
     }
   }, {
@@ -10637,6 +10652,14 @@ var Search = function () {
         this.closeOverlay();
         console.log('close overlay');
       }
+    }
+
+    // Search Overlay Structure
+
+  }, {
+    key: "addSearchHTML",
+    value: function addSearchHTML() {
+      (0, _jquery2.default)("body").append("\n\n    <div class=\"search-overlay\">\n      <div class=\"search-overlay__top\">\n        <div class=\"container\">\n          <i class=\"fa fa-search search-overlay__icon\" aria-hidden=\"true\"></i>\n          <input id=\"search-term\" text=\"text\" class=\"search-term\" placeholder=\"What are you looking for?\">\n          <i class=\"fa fa-window-close search-overlay__close\" aria-hidden=\"true\"></i>\n        </div>\n      </div>\n    \n      <div class=\"container\">\n        <div id=\"search-overlay__results\">\n        </div>\n      </div>\n    </div>\n    ");
     }
   }]);
 
