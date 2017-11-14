@@ -2,6 +2,7 @@
 
 require get_theme_file_path('/inc/search-route.php');
 
+// Add a field to the existing WP_REST API object
 function university_custom_rest(){
   register_rest_field('post', 'authorName', array(
     'get_callback' => function(){
@@ -9,7 +10,7 @@ function university_custom_rest(){
     }
   ));
   // you can add more here if you like - for a custom field, for example:
-  // register_rest_field('professor', 'subject', array ( 'get_callback => function(){ return some crap }'))
+  // register_rest_field('professor', 'subject', array ( 'get_callback => function(){ return custom field value }'))
 }
 add_action('rest_api_init', 'university_custom_rest');
 // Arguments are made optional so that defaults can be used by simply calling the function without passing any args
@@ -47,7 +48,8 @@ function university_files() {
   wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
   wp_enqueue_style('university_main_styles', get_stylesheet_uri());
   // handle has to match the handle of the script you want to make flexible
-  // Will create a 'universityData' JS object which you can view in the source and can access in Search.js, for example - you can add many more items in the array if you wanted to
+  // Will create a 'universityData' JS object which you can view in the source and can access in Search.js - which compiles to 'main-university-js''s corresponding script
+  // you can add many more items in the array if you wanted to
   wp_localize_script( 'main-university-js', 'universityData', array(
     'root_url' => get_site_url()
   ));

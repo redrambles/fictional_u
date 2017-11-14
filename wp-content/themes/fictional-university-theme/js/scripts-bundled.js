@@ -10560,7 +10560,7 @@ var Search = function () {
   function Search() {
     _classCallCheck(this, Search);
 
-    // must put this at the top because the following properties are looking for things that exist within the structure, which needs to exist first - hence calling the addSearchHTML structure function first
+    // must put the 'addSearchHTML' at the top because the properties below are looking for things that exist within the structure, which needs to exist first - hence calling the addSearchHTML structure function first
     this.addSearchHTML();
     this.openButton = (0, _jquery2.default)(".js-search-trigger");
     this.closeButton = (0, _jquery2.default)(".search-overlay__close");
@@ -10606,7 +10606,7 @@ var Search = function () {
           this.isSpinnerSpinning = false;
         }
       }
-      this.previousSearchValue = this.searchField.val();
+      this.previousSearchValue = this.searchField.val();e;
     }
   }, {
     key: "getResults",
@@ -10619,13 +10619,13 @@ var Search = function () {
           return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>\n            " + (item.type == 'post' ? " by " + item.authorName + " " : '') + " </li>";
         }).join('') + "\n            " + (results.generalInfo.length ? '</ul>' : '') + "\n          </div>\n\n          <div class=\"one-third\">\n            <h2 class=\"search-overlay__section-title\">Programs</h2>\n            " + (results.programs.length ? '<ul class="link-list min-list">' : "<p>No programs match that search. <a href=\"" + universityData.root_url + "/programs\">View All Programs.</a></p>") + "\n            " + results.programs.map(function (item) {
           return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>";
-        }).join('') + "\n            " + (results.programs.length ? '</ul>' : '') + "\n        \n            <h2 class=\"search-overlay__section-title\">Professors</h2>\n            " + (results.professors.length ? '<ul class="link-list min-list">' : '<p>No professors match that search.</p>') + "\n            " + results.professors.map(function (item) {
-          return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>";
+        }).join('') + "\n            " + (results.programs.length ? '</ul>' : '') + "\n        \n            <h2 class=\"search-overlay__section-title\">Professors</h2>\n            " + (results.professors.length ? '<ul class="professor-cards">' : '<p>No professors match that search.</p>') + "\n            " + results.professors.map(function (item) {
+          return "\n            <li class=\"professor-card__list-item\">\n              <a class=\"professor-card\" href=\"" + item.permalink + "\">\n                <img class=\"professor-card__image\" src=\"" + item.image + "\">\n                <span class=\"professor-card__name\">" + item.title + "</span>\n              </a>\n            </li>\n            ";
         }).join('') + "\n            " + (results.professors.length ? '</ul>' : '') + "\n          </div>\n\n          <div class=\"one-third\">\n            <h2 class=\"search-overlay__section-title\">Campuses</h2>\n            " + (results.campuses.length ? '<ul class="link-list min-list">' : "<p>No campuses match that search. <a href=\"" + universityData.root_url + "/campuses\">View All Campuses.</a></p>") + "\n            " + results.campuses.map(function (item) {
           return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>";
-        }).join('') + "\n            " + (results.campuses.length ? '</ul>' : '') + "\n\n            <h2 class=\"search-overlay__section-title\">Events</h2>\n            " + (results.events.length ? '<ul class="link-list min-list">' : '<p>No events matches that search.</p>') + "\n            " + results.events.map(function (item) {
-          return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>";
-        }).join('') + "\n            " + (results.events.length ? '</ul>' : '') + "\n          </div>\n\n        </div><!-- .row -->\n      ");
+        }).join('') + "\n            " + (results.campuses.length ? '</ul>' : '') + "\n\n            <h2 class=\"search-overlay__section-title\">Events</h2>\n            " + (results.events.length ? '' : "<p>No events matches that search.</p> <a href=\"" + universityData.root_url + "/events\">View All Events.</a></p>") + "\n            " + results.events.map(function (item) {
+          return "\n            <div class=\"event-summary\">\n              <a class=\"event-summary__date t-center\" href=\"" + item.permalink + "\">\n                <span class=\"event-summary__month\">" + item.month + "</span>\n                <span class=\"event-summary__day\">" + item.day + "</span>  \n              </a>\n              <div class=\"event-summary__content\">\n                <h5 class=\"event-summary__title headline headline--tiny\"><a href=\"" + item.permalink + "\">" + item.title + "</a></h5>\n                <p>" + item.description + "<a href=\"<" + item.permalink + ">\" class=\"nu gray\">Learn more</a></p>\n              </div>\n            </div>\n            ";
+        }).join('') + "\n          </div>\n        </div><!-- .row -->\n      ");
         _this.isSpinnerSpinning = false;
       });
     }
