@@ -47,7 +47,7 @@ function university_files() {
   wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
   wp_enqueue_style('university_main_styles', get_stylesheet_uri());
   // handle has to match the handle of the script you want to make flexible
-  // Will create a 'universityData' JS object which you can view in the source and can access in Search.js, for example
+  // Will create a 'universityData' JS object which you can view in the source and can access in Search.js, for example - you can add many more items in the array if you wanted to
   wp_localize_script( 'main-university-js', 'universityData', array(
     'root_url' => get_site_url()
   ));
@@ -66,20 +66,20 @@ function university_features() {
 
 add_action('after_setup_theme', 'university_features');
 
-// Archive: Only show events that haven't passed and order by event date from soonest to farthest away
 function university_adjust_archives($query) {
 
-  if( !is_admin() && is_post_type_archive('campus') && is_main_query() ) {
+  if( !is_admin() && is_post_type_archive('campus') && $query->is_main_query() ) {
     $query->set('posts_per_page', 50 );
   }
 
-  if( !is_admin() && is_post_type_archive('program') && is_main_query() ) {
+  if( !is_admin() && is_post_type_archive('program') && $query->is_main_query() ) {
     $query->set('posts_per_page', 50 );
     $query->set('orderby', 'title');
     $query->set('order', 'ASC');
   }
 
-  if( !is_admin() && is_post_type_archive('event') && is_main_query() ) {
+// Archive: Only show events that haven't passed and order by event date from soonest to farthest away
+  if( !is_admin() && is_post_type_archive('event') && $query->is_main_query() ) {
     $today = date('Ymd');
     $query->set('meta_key', 'event_date');
     $query->set('orderby', 'meta_value_num');

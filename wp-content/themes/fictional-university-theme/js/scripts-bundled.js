@@ -10613,15 +10613,20 @@ var Search = function () {
     value: function getResults() {
       var _this = this;
 
-      _jquery2.default.when(_jquery2.default.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val()), _jquery2.default.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.val())).then(function (posts, pages) {
-        var combinedResults = posts[0].concat(pages[0]);
-        _this.searchResults.html("\n          <h2 class=\"search-overlay__section-title\">General information</h2>\n          " + (combinedResults.length ? '<ul class="link-list min-list">' : '<p>No results matches that search.</p>') + "\n            " + combinedResults.map(function (item) {
-          return "<li><a href=\"" + item.link + "\">" + item.title.rendered + "</a>\n            " + (item.type == 'post' ? " by " + item.authorName + " " : '') + " </li>";
-        }).join('') + "\n          " + (combinedResults.length ? '</ul>' : '') + "\n        ");
+      // leverage our new custom rest route
+      _jquery2.default.getJSON(universityData.root_url + '/wp-json/university/v1/search?term=' + this.searchField.val(), function (results) {
+        _this.searchResults.html("\n          <div class=\"row\">\n\n          <div class=\"one-third\">\n            <h2 class=\"search-overlay__section-title\">General Information</h2>\n            " + (results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No results matches that search.</p>') + "\n            " + results.generalInfo.map(function (item) {
+          return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>\n            " + (item.type == 'post' ? " by " + item.authorName + " " : '') + " </li>";
+        }).join('') + "\n            " + (results.generalInfo.length ? '</ul>' : '') + "\n          </div>\n\n          <div class=\"one-third\">\n            <h2 class=\"search-overlay__section-title\">Programs</h2>\n            " + (results.programs.length ? '<ul class="link-list min-list">' : "<p>No programs match that search. <a href=\"" + universityData.root_url + "/programs\">View All Programs.</a></p>") + "\n            " + results.programs.map(function (item) {
+          return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>";
+        }).join('') + "\n            " + (results.programs.length ? '</ul>' : '') + "\n        \n            <h2 class=\"search-overlay__section-title\">Professors</h2>\n            " + (results.professors.length ? '<ul class="link-list min-list">' : '<p>No professors match that search.</p>') + "\n            " + results.professors.map(function (item) {
+          return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>";
+        }).join('') + "\n            " + (results.professors.length ? '</ul>' : '') + "\n          </div>\n\n          <div class=\"one-third\">\n            <h2 class=\"search-overlay__section-title\">Campuses</h2>\n            " + (results.campuses.length ? '<ul class="link-list min-list">' : "<p>No campuses match that search. <a href=\"" + universityData.root_url + "/campuses\">View All Campuses.</a></p>") + "\n            " + results.campuses.map(function (item) {
+          return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>";
+        }).join('') + "\n            " + (results.campuses.length ? '</ul>' : '') + "\n\n            <h2 class=\"search-overlay__section-title\">Events</h2>\n            " + (results.events.length ? '<ul class="link-list min-list">' : '<p>No events matches that search.</p>') + "\n            " + results.events.map(function (item) {
+          return "<li><a href=\"" + item.permalink + "\">" + item.title + "</a></li>";
+        }).join('') + "\n            " + (results.events.length ? '</ul>' : '') + "\n          </div>\n\n        </div><!-- .row -->\n      ");
         _this.isSpinnerSpinning = false;
-      }, function (e) {
-        _this.searchResults.html('Hey! An unexpected error ocurred. Please try again.');
-        console.log("Error status: " + e.status);
       });
     }
   }, {

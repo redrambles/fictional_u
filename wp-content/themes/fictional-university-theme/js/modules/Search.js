@@ -47,26 +47,48 @@ class Search {
   }
 
   getResults(){
+    // leverage our new custom rest route
+    $.getJSON(universityData.root_url + '/wp-json/university/v1/search?term=' + this.searchField.val(), (results) => { this.searchResults.html(`
+          <div class="row">
 
-    $.when(
-        $.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val()), 
-        $.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.val())
-        ).then((posts, pages) => {
-        var combinedResults = posts[0].concat(pages[0]);
-        this.searchResults.html(`
-          <h2 class="search-overlay__section-title">General information</h2>
-          ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No results matches that search.</p>'}
-            ${combinedResults.map(item => `<li><a href="${item.link}">${item.title.rendered}</a>
+          <div class="one-third">
+            <h2 class="search-overlay__section-title">General Information</h2>
+            ${results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No results matches that search.</p>'}
+            ${results.generalInfo.map(item => `<li><a href="${item.permalink}">${item.title}</a></li>
             ${item.type == 'post' ? ` by ${item.authorName} ` : ''} </li>`).join('')}
-          ${combinedResults.length ? '</ul>' : ''}
-        `);
-        this.isSpinnerSpinning = false;
-    }, (e) => {
-      this.searchResults.html('Hey! An unexpected error ocurred. Please try again.')
-      console.log(`Error status: ${e.status}`);
-    });
-  }
+            ${results.generalInfo.length ? '</ul>' : ''}
+          </div>
 
+          <div class="one-third">
+            <h2 class="search-overlay__section-title">Programs</h2>
+            ${results.programs.length ? '<ul class="link-list min-list">' : `<p>No programs match that search. <a href="${universityData.root_url}/programs">View All Programs.</a></p>`}
+            ${results.programs.map(item => `<li><a href="${item.permalink}">${item.title}</a></li>`).join('')}
+            ${results.programs.length ? '</ul>' : ''}
+        
+            <h2 class="search-overlay__section-title">Professors</h2>
+            ${results.professors.length ? '<ul class="link-list min-list">' : '<p>No professors match that search.</p>'}
+            ${results.professors.map(item => `<li><a href="${item.permalink}">${item.title}</a></li>`).join('')}
+            ${results.professors.length ? '</ul>' : ''}
+          </div>
+
+          <div class="one-third">
+            <h2 class="search-overlay__section-title">Campuses</h2>
+            ${results.campuses.length ? '<ul class="link-list min-list">' : `<p>No campuses match that search. <a href="${universityData.root_url}/campuses">View All Campuses.</a></p>`}
+            ${results.campuses.map(item => `<li><a href="${item.permalink}">${item.title}</a></li>`).join('')}
+            ${results.campuses.length ? '</ul>' : ''}
+
+            <h2 class="search-overlay__section-title">Events</h2>
+            ${results.events.length ? '<ul class="link-list min-list">' : '<p>No events matches that search.</p>'}
+            ${results.events.map(item => `<li><a href="${item.permalink}">${item.title}</a></li>`).join('')}
+            ${results.events.length ? '</ul>' : ''}
+          </div>
+
+        </div><!-- .row -->
+      `);
+      this.isSpinnerSpinning = false;
+     });
+    }
+    
   openOverlay(){
     $("body").addClass("body-no-scroll");
     this.searchOverlay.addClass("search-overlay--active");

@@ -15,7 +15,7 @@ function universitySearchResults($data) {
     's' => sanitize_text_field($data['term']) // 's' = 'search'
   ));
 
-  // this cute little multi-dimensional array will hold our return results in an organized way
+  // this cute little empty multi-dimensional array will hold our return results in an organized way with array_push
   $results = array(
     'generalInfo' => array(
 
@@ -41,30 +41,32 @@ function universitySearchResults($data) {
       array_push( $results['generalInfo'], array(
         'title' => get_the_title(),
         'permalink' => get_the_permalink(),
+        'type' => get_post_type(),
+        'authorName' => get_author_name( )
       ));
     }
     if (get_post_type() == 'event') {
       array_push( $results['events'], array(
         'title' => get_the_title(),
-        'permalink' => get_the_permalink(),
+        'permalink' => get_the_permalink()
       ));
     }
     if (get_post_type() == 'program') {
       array_push( $results['programs'], array(
         'title' => get_the_title(),
-        'permalink' => get_the_permalink(),
+        'permalink' => get_the_permalink()
       ));
     }
     if (get_post_type() == 'campus') {
       array_push( $results['campuses'], array(
         'title' => get_the_title(),
-        'permalink' => get_the_permalink(),
+        'permalink' => get_the_permalink()
       ));
     }
     if (get_post_type() == 'professor') {
       array_push( $results['professors'], array(
         'title' => get_the_title(),
-        'permalink' => get_the_permalink(),
+        'permalink' => get_the_permalink()
       ));
     }
   
