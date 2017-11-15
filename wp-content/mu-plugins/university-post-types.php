@@ -57,7 +57,7 @@ function university_post_types(){
     'rewrite' => array(
       'slug' => 'programs'
     ),
-    'supports' => array('title', 'editor')
+    'supports' => array('title')
   ));
 
   // Professors
