@@ -110,7 +110,9 @@ class Search {
     this.searchOverlay.addClass("search-overlay--active");
     this.searchField.val('');
     setTimeout(() => this.searchField.focus(), 301); // to give the overlay time to fully fade in
-    this.isOverlayOpen = true;    
+    this.isOverlayOpen = true;
+    // this will prevent the default link from taking us to the /search page for those of us with JS enabled
+    return false;    
   }
 
   closeOverlay(){
