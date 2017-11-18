@@ -43,7 +43,7 @@ class Search {
         this.isSpinnerSpinning = false;
       }
     }
-    this.previousSearchValue = this.searchField.val();e
+    this.previousSearchValue = this.searchField.val();
   }
 
   getResults(){
