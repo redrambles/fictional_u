@@ -6,6 +6,8 @@ function university_post_types(){
 
   // Campus
   register_post_type( 'campus', array(
+    'capability_type' => 'campus',
+    'map_meta_cap' => true,
     'public' => true,
     'labels' => array(
       'name' => 'Campuses',
@@ -25,6 +27,8 @@ function university_post_types(){
 
   // Event
   register_post_type( 'event', array(
+      'capability_type' => 'event',
+      'map_meta_cap' => true,
       'public' => true,
       'labels' => array(
         'name' => 'Events',
