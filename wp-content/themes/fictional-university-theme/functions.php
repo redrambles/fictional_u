@@ -106,6 +106,7 @@ function university_map_key($api){
 add_filter('acf/fields/google_map/api', 'university_map_key');
 
 // Redirect subscribers to front page when they log in
+add_action('admin_init', 'redirect_subscribers_to_front_end');  
 
 function redirect_subscribers_to_front_end(){
   $current_user = wp_get_current_user();
@@ -115,9 +116,10 @@ function redirect_subscribers_to_front_end(){
   }
 
 }
-add_action('admin_init', 'redirect_subscribers_to_front_end');  
 
 // Remove admin bar for subscribers
+add_action('wp_loaded', 'remove_subscribers_admin_bar');  
+
 function remove_subscribers_admin_bar(){
   $current_user = wp_get_current_user();
   if( count( $current_user->roles ) == 1 && $current_user->roles[0] == 'subscriber' ) {
@@ -125,4 +127,10 @@ function remove_subscribers_admin_bar(){
   }
 
 }
-add_action('wp_loaded', 'remove_subscribers_admin_bar');  
+
+// Customize Login Screen
+add_filter('login_headerurl', 'fictional_university_login_url');
+
+function  fictional_university_login_url() {
+  return esc_url( site_url('/') ); 
+}
