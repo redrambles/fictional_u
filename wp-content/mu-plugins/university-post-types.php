@@ -80,6 +80,22 @@ function university_post_types(){
     'supports' => array('title', 'editor', 'thumbnail')
   ));
 
+    // Notes
+    register_post_type( 'note', array(
+      'show_in_rest' => true,
+      'public' => false, // we don't want this showing up in public queries 
+      'show_ui' => true, // if 'public' is set to false, 'show_ui' is automatically set to false - so if you want to see in admin, must set it to true.
+      'labels' => array(
+        'name' => 'Notes',
+        'add_new_item' => 'Add New Note',
+        'edit_item' => 'Edit Note',
+        'all_items' => 'All Notes',
+        'singular_name' => 'Note'
+      ),
+      'menu_icon' => 'dashicons-welcome-write-blog',
+      'supports' => array('title', 'editor')
+    ));
+
 }
 
 add_action('init', 'university_post_types');

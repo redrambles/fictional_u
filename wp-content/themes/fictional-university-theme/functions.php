@@ -51,7 +51,8 @@ function university_files() {
   // Will create a 'universityData' JS object which you can view in the source and can access in Search.js - which compiles to 'main-university-js''s corresponding script
   // you can add many more items in the array if you wanted to
   wp_localize_script( 'main-university-js', 'universityData', array(
-    'root_url' => get_site_url()
+    'root_url'  => get_site_url(),
+    'nonce'     => wp_create_nonce('wp_rest') // will be generated automatically when a user is logged in (good for that session)
   ));
 }
 
@@ -133,4 +134,18 @@ add_filter('login_headerurl', 'fictional_university_login_url');
 
 function  fictional_university_login_url() {
   return esc_url( site_url('/') ); 
+}
+
+add_filter('login_headertitle', 'fictional_university_login_title');
+
+function fictional_university_login_title() {
+  return 'Fictional University';
+}
+
+// Make it so our theme CSS also applies to the login page
+add_action('login_enqueue_scripts', 'ourLoginCSS');
+function ourLoginCSS(){
+  wp_enqueue_style('university_main_styles', get_stylesheet_uri());  
+  wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
+  
 }
