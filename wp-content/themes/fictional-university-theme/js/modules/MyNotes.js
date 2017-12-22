@@ -17,7 +17,7 @@ class MyNotes {
   // Methods 
   editNote(e){
     var thisNote = $(e.target).parents("li");
-    if (thisNote.data("state") == "editable"){ 
+    if (thisNote.data("state") == "editable"){ // "state" is not yet set with a new note so will always trigger the 'makeNoteEditable' method
       this.makeNoteReadOnly(thisNote);
     } else {
       this.makeNoteEditable(thisNote);
@@ -25,10 +25,10 @@ class MyNotes {
   }
 
   makeNoteEditable(thisNote){
-    thisNote.find(".edit-note").html('<i class="fa fa-times" aria-hidden="true"></i>Cancel');
-    thisNote.find(".note-title-field, .note-body-field").removeAttr("readonly").addClass("note-active-field");
-    thisNote.find(".update-note").addClass("update-note--visible");
-    thisNote.data("state", "editable");
+    thisNote.find(".edit-note").html('<i class="fa fa-times" aria-hidden="true"></i>Cancel'); // Change button test from 'Edit' to 'Cancel'
+    thisNote.find(".note-title-field, .note-body-field").removeAttr("readonly").addClass("note-active-field"); // Allow editing of title and content
+    thisNote.find(".update-note").addClass("update-note--visible"); // Make 'Save' button visible
+    thisNote.data("state", "editable"); // Change state
   }
 
   makeNoteReadOnly(thisNote){
@@ -67,8 +67,8 @@ class MyNotes {
   updateNote(e) {
     var thisNote = $(e.target).parents("li");
     var ourUpdatedPost = {
-      'title': thisNote.find(".note-title-field").val(),
-      'content': thisNote.find(".note-body-field").val()
+      'title': thisNote.find(".note-title-field").val(), // grab edited title
+      'content': thisNote.find(".note-body-field").val() // grab edited content
     }
 
     $.ajax({
@@ -117,7 +117,7 @@ class MyNotes {
             <textarea readonly class="note-body-field">${response.content.raw}</textarea>
             <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i>Save</span>
           </li>  
-          `).prependTo("#my-notes").hide().slideDown(); // Slide the new note to the top of the list
+          `).prependTo("#my-notes").hide().slideDown(); // Slide the new note into view at the top of the list
         console.log("Congrats, changed post!");
         console.log(response);
       },

@@ -1,5 +1,7 @@
 <?php
 
+// Created a 'my notes' to list all the notes with custom query and produce form to create new notes
+// Works in conjunction with js/modules/MyNotes.js 
 if (!is_user_logged_in()){
   wp_redirect(esc_url(site_url('/')));
   exit;
@@ -22,6 +24,8 @@ if (!is_user_logged_in()){
         <span class="submit-note">Create Note</span>
         <span class="note-limit-message">Note limit reached: Delete an existing note to make room for a new one.</span>
       </div>
+
+
       <ul class="min-list link-list" id="my-notes">
         <?php 
           $userNotes = new WP_Query(array(
@@ -37,8 +41,7 @@ if (!is_user_logged_in()){
               <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</span>
               <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</span>
               <textarea readonly class="note-body-field"><?php echo esc_attr(get_the_content());?></textarea>
-              <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i>Save</span>
-
+              <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i>Save</span><!--- this is hidden until Edit button clicked -->
             </li>   
          <?php } ?>  
       </ul>

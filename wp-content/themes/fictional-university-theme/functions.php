@@ -4,19 +4,19 @@ require get_theme_file_path('/inc/search-route.php');
 
 // Add a field to the existing WP_REST API object
 function university_custom_rest(){
+  // add Author name (not just ID - which is what is normally returned) in rest object for posts
   register_rest_field('post', 'authorName', array(
     'get_callback' => function(){
       return get_the_author();
     }
   ));
-
+  // add the userNoteCount rest field for note posts
   register_rest_field('note', 'userNoteCount', array(
     'get_callback' => function(){
       return count_user_posts(get_current_user_id(), 'note');
     }
   ));
-  // you can add more here if you like - for a custom field, for example:
-  // register_rest_field('professor', 'subject', array ( 'get_callback => function(){ return custom field value }'))
+
 }
 add_action('rest_api_init', 'university_custom_rest');
 // Arguments are made optional so that defaults can be used by simply calling the function without passing any args
@@ -155,18 +155,21 @@ function ourLoginCSS(){
   wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i'); 
 }
 
-// Force note posts to be private
+// Force note posts to be private and limit their number
 add_filter('wp_insert_post_data', 'make_note_private', 10, 2); // the 'wp_insert_post_data' filter is extremely powerful / flexible
 
 function make_note_private($data, $postarr){
 
   if($data['post_type'] == 'note'){
+
+    // limit number of posts
     if(count_user_posts(get_current_user_id(), 'note') > 4 &&  !$postarr['ID']) { // checking to see if ID exists - if so, the note isn't new and we should be able to edit / delete it
       die("You have reached your note limit.");
     }
-    $data['post_content'] = sanitize_textarea_field($data['post_content']);
+    $data['post_content'] = sanitize_textarea_field($data['post_content']); // make sure user cannot enter harmful code into the database
     $data['post_title'] = sanitize_text_field($data['post_title']);
   }
+  // If we're creating a note, make it private.
   if($data['post_type'] == 'note' && $data['post_status'] != 'trash') {
     $data['post_status'] = "private";
   }
