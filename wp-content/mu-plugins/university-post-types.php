@@ -82,6 +82,8 @@ function university_post_types(){
 
     // Notes
     register_post_type( 'note', array(
+      'capability_type' => 'note', // new capability type - so permissions will only apply to this post type
+      'map_meta_cap' => true, // will enforce and require the permissions at the right time / place
       'show_in_rest' => true, // So we can create our CRUD note app by using the REST API
       'public' => false, // we don't want this showing up in public queries 
       'show_ui' => true, // if 'public' is set to false, 'show_ui' is automatically set to false - so if you want to see in admin, must set it to true.

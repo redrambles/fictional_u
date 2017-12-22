@@ -10562,21 +10562,45 @@ var MyNotes = function () {
     this.events();
   }
 
+  // Event Handlers
+
+
   _createClass(MyNotes, [{
     key: "events",
     value: function events() {
-      (0, _jquery2.default)(".delete-note").on("click", this.deleteNote);
-      (0, _jquery2.default)(".edit-note").on("click", this.editNote);
+      (0, _jquery2.default)("#my-notes").on("click", ".delete-note", this.deleteNote);
+      (0, _jquery2.default)("#my-notes").on("click", ".edit-note", this.editNote.bind(this));
+      (0, _jquery2.default)("#my-notes").on("click", ".update-note", this.updateNote.bind(this));
+      (0, _jquery2.default)(".submit-note").on("click", this.createNote.bind(this));
     }
 
-    // Methods will go here
+    // Methods 
 
   }, {
     key: "editNote",
     value: function editNote(e) {
       var thisNote = (0, _jquery2.default)(e.target).parents("li");
+      if (thisNote.data("state") == "editable") {
+        this.makeNoteReadOnly(thisNote);
+      } else {
+        this.makeNoteEditable(thisNote);
+      }
+    }
+  }, {
+    key: "makeNoteEditable",
+    value: function makeNoteEditable(thisNote) {
+      thisNote.find(".edit-note").html('<i class="fa fa-times" aria-hidden="true"></i>Cancel');
       thisNote.find(".note-title-field, .note-body-field").removeAttr("readonly").addClass("note-active-field");
       thisNote.find(".update-note").addClass("update-note--visible");
+      thisNote.data("state", "editable");
+    }
+  }, {
+    key: "makeNoteReadOnly",
+    value: function makeNoteReadOnly(thisNote) {
+      thisNote.find(".edit-note").html('<i class="fa fa-pencil" aria-hidden="true"></i>Edit');
+      thisNote.find(".note-title-field, .note-body-field").attr("readonly", "readonly").removeClass("note-active-field");
+      thisNote.find(".update-note").removeClass("update-note--visible");
+      thisNote.data("state", "cancel");
     }
   }, {
     key: "deleteNote",
@@ -10599,6 +10623,66 @@ var MyNotes = function () {
         error: function error(_error) {
           console.log("Sorry - did not work");
           console.log(_error);
+        }
+      });
+    }
+  }, {
+    key: "updateNote",
+    value: function updateNote(e) {
+      var _this = this;
+
+      var thisNote = (0, _jquery2.default)(e.target).parents("li");
+      var ourUpdatedPost = {
+        'title': thisNote.find(".note-title-field").val(),
+        'content': thisNote.find("note-body-field").val()
+      };
+
+      _jquery2.default.ajax({
+        // This will prove to WP that we are logged in and have permission to delete note
+        beforeSend: function beforeSend(xhr) {
+          xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+        },
+        url: universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.data('id'),
+        type: 'POST',
+        data: ourUpdatedPost,
+        success: function success(response) {
+          _this.makeNoteReadOnly(thisNote);
+          console.log("Congrats, changed post!");
+          console.log(response);
+        },
+        error: function error(_error2) {
+          console.log("Sorry - did not work");
+          console.log(_error2);
+        }
+      });
+    }
+  }, {
+    key: "createNote",
+    value: function createNote(e) {
+
+      var ourNewPost = {
+        'title': (0, _jquery2.default)(".new-note-title").val(),
+        'content': (0, _jquery2.default)(".new-note-body").val(),
+        'status': 'publish'
+      };
+
+      _jquery2.default.ajax({
+        // This will prove to WP that we are logged in and have permission to delete note
+        beforeSend: function beforeSend(xhr) {
+          xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+        },
+        url: universityData.root_url + '/wp-json/wp/v2/note/',
+        type: 'POST',
+        data: ourNewPost,
+        success: function success(response) {
+          (0, _jquery2.default)(".new-note-title, .new-note-body").val(''); // Empty out the fields
+          (0, _jquery2.default)("\n          <li data-id=\"" + response.id + "\">\n            <input readonly class=\"note-title-field\" value=\"" + response.title.raw + "\">\n            <span class=\"edit-note\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>Edit</span>\n            <span class=\"delete-note\"><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>Delete</span>\n            <textarea readonly class=\"note-body-field\">" + response.content.raw + "</textarea>\n            <span class=\"update-note btn btn--blue btn--small\"><i class=\"fa fa-arrow-right\" aria-hidden=\"true\"></i>Save</span>\n          </li>  \n          ").prependTo("#my-notes").hide().slideDown(); // Slide the new note to the top of the list
+          console.log("Congrats, changed post!");
+          console.log(response);
+        },
+        error: function error(_error3) {
+          console.log("Sorry - did not work");
+          console.log(_error3);
         }
       });
     }
