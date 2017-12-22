@@ -82,7 +82,7 @@ function university_post_types(){
 
     // Notes
     register_post_type( 'note', array(
-      'show_in_rest' => true,
+      'show_in_rest' => true, // So we can create our CRUD note app by using the REST API
       'public' => false, // we don't want this showing up in public queries 
       'show_ui' => true, // if 'public' is set to false, 'show_ui' is automatically set to false - so if you want to see in admin, must set it to true.
       'labels' => array(

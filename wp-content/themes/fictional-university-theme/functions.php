@@ -31,7 +31,7 @@ function university_page_banner( $args = NULL ){
     }  
   } 
   echo '<div class="page-banner">';
-  echo    '<div class="page-banner__bg-image" style="background-image: url(\''. $args['photo'] .'\'">"></div>';
+  echo    '<div class="page-banner__bg-image" style="background-image: url(\''. $args['photo'] .'\'"></div>';
   echo    '<div class="page-banner__content container container--narrow">';
   echo     '<h1 class="page-banner__title">' . $args['title'] . '</h1>';
   echo      '<div class="page-banner__intro">';
