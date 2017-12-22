@@ -10619,6 +10619,9 @@ var MyNotes = function () {
           console.log("Congrats, that note was deleted");
           thisNote.slideUp(); // when you hit 'Delete', fade up and out with the slideUp jQuery command
           console.log(response);
+          if (response.userNoteCount < 5) {
+            (0, _jquery2.default)(".note-limit-message").removeClass("active");
+          }
         },
         error: function error(_error) {
           console.log("Sorry - did not work");
@@ -10634,7 +10637,7 @@ var MyNotes = function () {
       var thisNote = (0, _jquery2.default)(e.target).parents("li");
       var ourUpdatedPost = {
         'title': thisNote.find(".note-title-field").val(),
-        'content': thisNote.find("note-body-field").val()
+        'content': thisNote.find(".note-body-field").val()
       };
 
       _jquery2.default.ajax({
@@ -10658,12 +10661,12 @@ var MyNotes = function () {
     }
   }, {
     key: "createNote",
-    value: function createNote(e) {
+    value: function createNote() {
 
       var ourNewPost = {
         'title': (0, _jquery2.default)(".new-note-title").val(),
         'content': (0, _jquery2.default)(".new-note-body").val(),
-        'status': 'publish'
+        'status': 'publish' // will enforce private status on server side
       };
 
       _jquery2.default.ajax({
@@ -10681,6 +10684,9 @@ var MyNotes = function () {
           console.log(response);
         },
         error: function error(_error3) {
+          if (_error3.responseText == "You have reached your note limit.") {
+            (0, _jquery2.default)(".note-limit-message").addClass("active");
+          }
           console.log("Sorry - did not work");
           console.log(_error3);
         }

@@ -53,6 +53,9 @@ class MyNotes {
         console.log("Congrats, that note was deleted");
         thisNote.slideUp(); // when you hit 'Delete', fade up and out with the slideUp jQuery command
         console.log(response);
+        if (response.userNoteCount < 5) {
+          $(".note-limit-message").removeClass("active");
+        }
       },
       error: (error) => {
         console.log("Sorry - did not work");
@@ -65,7 +68,7 @@ class MyNotes {
     var thisNote = $(e.target).parents("li");
     var ourUpdatedPost = {
       'title': thisNote.find(".note-title-field").val(),
-      'content': thisNote.find("note-body-field").val()
+      'content': thisNote.find(".note-body-field").val()
     }
 
     $.ajax({
@@ -88,12 +91,12 @@ class MyNotes {
     });
   }
 
-  createNote(e) {
+  createNote() {
 
     var ourNewPost = {
       'title': $(".new-note-title").val(),
       'content': $(".new-note-body").val(),
-      'status': 'publish'
+      'status': 'publish' // will enforce private status on server side
     }
 
     $.ajax({
@@ -119,6 +122,9 @@ class MyNotes {
         console.log(response);
       },
       error: (error) => {
+        if (error.responseText == "You have reached your note limit.") {
+          $(".note-limit-message").addClass("active");
+        }
         console.log("Sorry - did not work");
         console.log(error);
       }

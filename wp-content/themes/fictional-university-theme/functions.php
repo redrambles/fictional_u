@@ -9,6 +9,12 @@ function university_custom_rest(){
       return get_the_author();
     }
   ));
+
+  register_rest_field('note', 'userNoteCount', array(
+    'get_callback' => function(){
+      return count_user_posts(get_current_user_id(), 'note');
+    }
+  ));
   // you can add more here if you like - for a custom field, for example:
   // register_rest_field('professor', 'subject', array ( 'get_callback => function(){ return custom field value }'))
 }
@@ -146,6 +152,23 @@ function fictional_university_login_title() {
 add_action('login_enqueue_scripts', 'ourLoginCSS');
 function ourLoginCSS(){
   wp_enqueue_style('university_main_styles', get_stylesheet_uri());  
-  wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
-  
+  wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i'); 
+}
+
+// Force note posts to be private
+add_filter('wp_insert_post_data', 'make_note_private', 10, 2); // the 'wp_insert_post_data' filter is extremely powerful / flexible
+
+function make_note_private($data, $postarr){
+
+  if($data['post_type'] == 'note'){
+    if(count_user_posts(get_current_user_id(), 'note') > 4 &&  !$postarr['ID']) { // checking to see if ID exists - if so, the note isn't new and we should be able to edit / delete it
+      die("You have reached your note limit.");
+    }
+    $data['post_content'] = sanitize_textarea_field($data['post_content']);
+    $data['post_title'] = sanitize_text_field($data['post_title']);
+  }
+  if($data['post_type'] == 'note' && $data['post_status'] != 'trash') {
+    $data['post_status'] = "private";
+  }
+  return $data;
 }
