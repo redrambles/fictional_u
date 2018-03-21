@@ -4,13 +4,19 @@ require get_theme_file_path('/inc/search-route.php');
 
 // Add a field to the existing WP_REST API object
 function university_custom_rest(){
+  // add Author name (not just ID - which is what is normally returned) in rest object for posts
   register_rest_field('post', 'authorName', array(
     'get_callback' => function(){
       return get_the_author();
     }
   ));
-  // you can add more here if you like - for a custom field, for example:
-  // register_rest_field('professor', 'subject', array ( 'get_callback => function(){ return custom field value }'))
+  // add the userNoteCount rest field for note posts
+  register_rest_field('note', 'userNoteCount', array(
+    'get_callback' => function(){
+      return count_user_posts(get_current_user_id(), 'note');
+    }
+  ));
+
 }
 add_action('rest_api_init', 'university_custom_rest');
 // Arguments are made optional so that defaults can be used by simply calling the function without passing any args
@@ -31,7 +37,7 @@ function university_page_banner( $args = NULL ){
     }  
   } 
   echo '<div class="page-banner">';
-  echo    '<div class="page-banner__bg-image" style="background-image: url(\''. $args['photo'] .'\'">"></div>';
+  echo    '<div class="page-banner__bg-image" style="background-image: url(\''. $args['photo'] .'\'"></div>';
   echo    '<div class="page-banner__content container container--narrow">';
   echo     '<h1 class="page-banner__title">' . $args['title'] . '</h1>';
   echo      '<div class="page-banner__intro">';
@@ -51,7 +57,8 @@ function university_files() {
   // Will create a 'universityData' JS object which you can view in the source and can access in Search.js - which compiles to 'main-university-js''s corresponding script
   // you can add many more items in the array if you wanted to
   wp_localize_script( 'main-university-js', 'universityData', array(
-    'root_url' => get_site_url()
+    'root_url'  => get_site_url(),
+    'nonce'     => wp_create_nonce('wp_rest') // will be generated automatically when a user is logged in (good for that session)
   ));
 }
 
@@ -133,4 +140,38 @@ add_filter('login_headerurl', 'fictional_university_login_url');
 
 function  fictional_university_login_url() {
   return esc_url( site_url('/') ); 
+}
+
+add_filter('login_headertitle', 'fictional_university_login_title');
+
+function fictional_university_login_title() {
+  return 'Fictional University';
+}
+
+// Make it so our theme CSS also applies to the login page
+add_action('login_enqueue_scripts', 'ourLoginCSS');
+function ourLoginCSS(){
+  wp_enqueue_style('university_main_styles', get_stylesheet_uri());  
+  wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i'); 
+}
+
+// Force note posts to be private and limit their number
+add_filter('wp_insert_post_data', 'make_note_private', 10, 2); // the 'wp_insert_post_data' filter is extremely powerful / flexible
+
+function make_note_private($data, $postarr){
+
+  if($data['post_type'] == 'note'){
+
+    // limit number of posts
+    if(count_user_posts(get_current_user_id(), 'note') > 4 &&  !$postarr['ID']) { // checking to see if ID exists - if so, the note isn't new and we should be able to edit / delete it
+      die("You have reached your note limit.");
+    }
+    $data['post_content'] = sanitize_textarea_field($data['post_content']); // make sure user cannot enter harmful code into the database
+    $data['post_title'] = sanitize_text_field($data['post_title']);
+  }
+  // If we're creating a note, make it private.
+  if($data['post_type'] == 'note' && $data['post_status'] != 'trash') {
+    $data['post_status'] = "private";
+  }
+  return $data;
 }
