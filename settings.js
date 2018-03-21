@@ -4,4 +4,6 @@
 // Run 'gulp watch' and party
 
 exports.themeLocation = './wp-content/themes/fictional-university-theme/';
-exports.urlToPreview = 'http://fictional-university.app'; // moral of this story - make sure you get this right <<<- 
+//exports.urlToPreview = 'http://fictional-university.app'; // moral of this story - make sure you get this right <<<- 
+exports.urlToPreview = 'http://localhost/fictional_university'; // moral of this story - make sure you get this right <<<- 
+
